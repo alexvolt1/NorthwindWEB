@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -23,7 +25,24 @@ namespace NorthwindWEB.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("https://localhost:44371/api/categories");
+
+            // Add an Accept header for JSON format.
+            client.DefaultRequestHeaders.Accept.Add(
+                new MediaTypeWithQualityHeaderValue("application/json"));
+
+            HttpResponseMessage response = client.GetAsync("api/data").Result;  // Blocking call!
+            string json = await response.Content.ReadAsStringAsync();
+
+            //return json;
+            return View(json);
+
+
+
+
+            //return View(await _context.Categories.ToListAsync());
         }
 
         // GET: Categories/Details/5
