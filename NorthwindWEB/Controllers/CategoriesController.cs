@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using NorthwindWeb;
 using NorthwindWEB.Data;
 using NorthwindWEB.Models;
+using NorthwindWEB.Repository.IRepository;
 
 namespace NorthwindWEB.Controllers
 {
@@ -17,30 +20,33 @@ namespace NorthwindWEB.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public CategoriesController(ApplicationDbContext context)
+        private readonly ICategoriesRepository _catRepo;
+
+        private readonly IHttpClientFactory _clientFactory;
+
+        public CategoriesController(ApplicationDbContext context,  ICategoriesRepository catRepo)
         {
             _context = context;
+
         }
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
+            //var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:44371/api/categories");
+            //List<Categories> catList = new List<Categories>();
+            //var client = _clientFactory.CreateClient();
+            //HttpResponseMessage response = await client.SendAsync(request);
+            //if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            //{
+            //    var jsonString = await response.Content.ReadAsStringAsync();
 
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri("https://localhost:44371/api/categories");
+            //    catList = JsonConvert.DeserializeObject<List<Categories>>(jsonString);
+            //    return View(catList);
+            //}
+            //return null;
 
-            // Add an Accept header for JSON format.
-            client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
-
-            HttpResponseMessage response = client.GetAsync("api/data").Result;  // Blocking call!
-            string json = await response.Content.ReadAsStringAsync();
-
-            //return json;
-            return View(json);
-
-
-
+            return View(new { data = await _catRepo.GetAllAsync(SD.CategoriesAPIPath) });
 
             //return View(await _context.Categories.ToListAsync());
         }
