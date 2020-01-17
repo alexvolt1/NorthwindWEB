@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NorthwindWEB.Data;
+using NorthwindWEB.Repository;
+using NorthwindWEB.Repository.IRepository;
 
 namespace NorthwindWEB
 {
@@ -29,7 +31,8 @@ namespace NorthwindWEB
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddControllersWithViews();
+            services.AddScoped<ICategoriesRepository, CategoriesRepository>();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddHttpClient();
         }
 

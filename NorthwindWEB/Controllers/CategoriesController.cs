@@ -27,6 +27,7 @@ namespace NorthwindWEB.Controllers
         public CategoriesController(ApplicationDbContext context,  ICategoriesRepository catRepo)
         {
             _context = context;
+            _catRepo = catRepo;
 
         }
 
@@ -35,6 +36,11 @@ namespace NorthwindWEB.Controllers
         {
             //var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:44371/api/categories");
             //List<Categories> catList = new List<Categories>();
+            //List<Categories> catList;
+
+            IEnumerable<Categories> ienumList;
+
+
             //var client = _clientFactory.CreateClient();
             //HttpResponseMessage response = await client.SendAsync(request);
             //if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -42,11 +48,16 @@ namespace NorthwindWEB.Controllers
             //    var jsonString = await response.Content.ReadAsStringAsync();
 
             //    catList = JsonConvert.DeserializeObject<List<Categories>>(jsonString);
+
+            ienumList = await _catRepo.GetAllAsync(SD.CategoriesAPIPath);
+            //catList = ienumList.ToList();
             //    return View(catList);
             //}
             //return null;
 
-            return View(new { data = await _catRepo.GetAllAsync(SD.CategoriesAPIPath) });
+            //return View(catList);
+
+            return View(ienumList);
 
             //return View(await _context.Categories.ToListAsync());
         }
